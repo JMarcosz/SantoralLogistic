@@ -1,0 +1,40 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('service_types', function (Blueprint $table) {
+            $table->id();
+            $table->string('code', 20)->unique();           // D2D, P2D, etc.
+            $table->string('name', 100);                    // Door to Door
+            $table->text('description')->nullable();
+            $table->string('scope', 50)->nullable();        // international, domestic
+            $table->string('default_incoterm', 10)->nullable(); // DAP, DDP
+            $table->boolean('is_active')->default(true);
+            $table->boolean('is_default')->default(false);
+            $table->timestampsTz();
+            $table->softDeletesTz();
+
+            // Indexes
+            $table->index('is_active');
+            $table->index('is_default');
+            $table->index('scope');
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('service_types');
+    }
+};

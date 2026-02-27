@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="420" viewBox="0 0 1200 420" role="img" aria-label="Stone Logistic Platform">
+  <!-- Background -->
+  <rect width="1200" height="420" rx="24" fill="#2C2C2C"/>
+
+  <!-- Mark -->
+  <g transform="translate(120,115)">
+    <!-- Top (teal) -->
+    <polygon points="130,0 260,70 130,140 0,70" fill="#3AB795"/>
+    <!-- Left (dark face) -->
+    <polygon points="0,70 130,140 130,280 0,210" fill="#3A3A3A"/>
+    <!-- Right (white face) -->
+    <polygon points="260,70 130,140 130,280 260,210" fill="#FFFFFF"/>
+  </g>
+
+  <!-- Logotype -->
+  <g transform="translate(460,150)">
+    <text x="0" y="0"
+          fill="#3AB795"
+          font-size="92"
+          font-weight="800"
+          font-family="Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif"
+          letter-spacing="-1">
+      Stone
+    </text>
+
+    <text x="0" y="92"
+          fill="#FFFFFF"
+          font-size="64"
+          font-weight="700"
+          font-family="Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif"
+          letter-spacing="-0.5">
+      Logistic Platform
+    </text>
+  </g>
+</svg>

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 320">
+  <g transform="translate(30,20)">
+    <polygon points="130,0 260,70 130,140 0,70" fill="var(--primary,#3AB795)"/>
+    <polygon points="0,70 130,140 130,280 0,210" fill="var(--foreground,#081521)"/>
+    <polygon points="260,70 130,140 130,280 260,210" fill="var(--background,#FFFFFF)"/>
+  </g>
+</svg>
