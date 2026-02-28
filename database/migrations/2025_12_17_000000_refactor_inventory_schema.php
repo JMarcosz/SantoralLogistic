@@ -22,6 +22,7 @@ return new class extends Migration
         Schema::table('inventory_items', function (Blueprint $table) {
             $table->string('item_code', 100)->nullable(false)->change();
             // Drop indexes using array syntax which Laravel translates to index name
+             $table->dropForeign(['warehouse_id']);
             $table->dropIndex(['warehouse_id', 'sku']);
             $table->dropIndex(['customer_id', 'sku']);
             $table->dropColumn('sku');
@@ -29,6 +30,10 @@ return new class extends Migration
             // Add new indexes
             $table->index(['warehouse_id', 'item_code']);
             $table->index(['customer_id', 'item_code']);
+            $table->foreign('warehouse_id')
+          ->references('id')
+          ->on('warehouses')
+          ->cascadeOnDelete();
         });
 
         // 2. Add warehouse_receipt_line_id to inventory_items
