@@ -26,7 +26,7 @@ class DatabaseSeeder extends Seeder
             FiscalSequenceSeeder::class,
             InvoicePermissionSeeder::class,
             PackageTypeSeeder::class,
-            PreinvoiceSeeder::class,
+            PreInvoiceSeeder::class,
             ProductServiceSeeder::class,
             RateSeeder::class,
             ServiceTypeSeeder::class,
