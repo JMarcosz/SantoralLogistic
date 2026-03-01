@@ -297,7 +297,7 @@ class ShippingOrder extends Model
      */
     public function footerTerms(): BelongsTo
     {
-        return $this->belongsTo(Term::class, 'terms_and_conditions_id');
+        return $this->belongsTo(Term::class, 'footer_terms_id');
     }
 
     /**
