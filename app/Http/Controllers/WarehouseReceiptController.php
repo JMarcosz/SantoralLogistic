@@ -151,7 +151,7 @@ class WarehouseReceiptController extends Controller
                 ->with('error', 'Esta recepción no puede ser editada.');
         }
 
-        $warehouseReceipt->load(['lines']);
+        $warehouseReceipt->load(['warehouse', 'customer', 'lines']);
 
         return Inertia::render('warehouse-receipts/edit', [
             'receipt' => $warehouseReceipt,
