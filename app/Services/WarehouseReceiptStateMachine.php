@@ -48,7 +48,22 @@ class WarehouseReceiptStateMachine
 
             $receivingLocation = Location::where('warehouse_id', $receipt->warehouse_id)
                 ->where('code', 'RECEIVING')
-                ->firstOrFail();
+                ->first();
+
+            // Fallback: try locations with RECV- prefix (e.g., RECV-01)
+            if (!$receivingLocation) {
+                $receivingLocation = Location::where('warehouse_id', $receipt->warehouse_id)
+                    ->where('code', 'like', 'RECV%')
+                    ->first();
+            }
+
+            if (!$receivingLocation) {
+                throw new InvalidWarehouseReceiptTransitionException(
+                    $receipt->status->value,
+                    'mark-received',
+                    'El almacén no tiene una ubicación de recepción (RECEIVING). Contacte al administrador para configurarla.'
+                );
+            }
 
             // Create inventory items from receipt lines
             foreach ($receipt->lines as $line) {
