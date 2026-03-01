@@ -59,11 +59,11 @@
 
         /* COLORES */
         .text-primary {
-            color: #1e40af;
+            color: #755000;
         }
 
         .bg-primary {
-            background-color: #1e40af;
+            background-color: #755000;
             color: white;
         }
 
@@ -76,7 +76,7 @@
             height: 2.5cm;
             padding: 30px 40px 10px 40px;
             background-color: #fff;
-            border-bottom: 2px solid #1e40af;
+            border-bottom: 2px solid #d3a611;
         }
 
         .company-logo {
@@ -86,7 +86,7 @@
 
         .invoice-title {
             font-size: 24px;
-            color: #1e40af;
+            color: #755000;
             text-align: right;
             line-height: 1;
         }
@@ -138,7 +138,7 @@
         .items-table th {
             text-align: left;
             padding: 8px 5px;
-            background-color: #1e40af;
+            background-color: #755000;
             color: #fff;
             font-size: 9px;
             text-transform: uppercase;
@@ -170,12 +170,12 @@
         }
 
         .total-row.final {
-            border-top: 2px solid #1e40af;
+            border-top: 2px solid #755000;
             margin-top: 15px;
             padding-top: 10px;
             font-size: 14px;
             font-weight: bold;
-            color: #1e40af;
+            color: #755000;
         }
 
         /* FOOTER */
@@ -245,7 +245,7 @@
     <div class="container">
 
         <div class="meta-section clearfix">
-            <div class="float-left" style="width: 48%; padding-right: 15px;">
+            <div class="float-left" style="width: 48%; padding-right: 15px; margin-top:20px">
                 <div class="box-title">Cliente</div>
                 <div class="client-name">{{ $preInvoice->customer?->name }}</div>
                 <div class="meta-data">
@@ -254,7 +254,7 @@
                 </div>
             </div>
 
-            <div class="float-right" style="width: 48%; padding-left: 15px;">
+            <div class="float-right" style="width: 48%; padding-left: 15px;  margin-top:20px">
                 @if($preInvoice->shippingOrder)
                 <div class="box-title">Referencia Orden de Envío</div>
                 <div class="meta-data">
