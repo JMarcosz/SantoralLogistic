@@ -40,8 +40,9 @@ class StoreShippingOrderRequest extends FormRequest
             'consignee_id' => 'nullable|exists:customers,id',
             'origin_port_id' => 'required|exists:ports,id',
             'destination_port_id' => 'required|exists:ports,id|different:origin_port_id',
-            'transport_mode_id' => 'required|exists:transport_modes,id',
-            'service_type_id' => 'required|exists:service_types,id',
+            // transport and service may be left blank now
+            'transport_mode_id' => 'nullable|exists:transport_modes,id',
+            'service_type_id' => 'nullable|exists:service_types,id',
             'currency_id' => 'required|exists:currencies,id',
             'total_amount' => 'nullable|numeric|min:0',
             'total_pieces' => 'nullable|integer|min:0',
@@ -86,8 +87,9 @@ class StoreShippingOrderRequest extends FormRequest
             'origin_port_id.required' => 'El puerto de origen es obligatorio.',
             'destination_port_id.required' => 'El puerto de destino es obligatorio.',
             'destination_port_id.different' => 'El puerto de destino debe ser diferente al de origen.',
-            'transport_mode_id.required' => 'El modo de transporte es obligatorio.',
-            'service_type_id.required' => 'El tipo de servicio es obligatorio.',
+            // keep messages for other validation errors but remove required messages
+            'transport_mode_id.exists' => 'El modo de transporte seleccionado no es válido.',
+            'service_type_id.exists' => 'El tipo de servicio seleccionado no es válido.',
             'currency_id.required' => 'La moneda es obligatoria.',
             'planned_arrival_at.after_or_equal' => 'La fecha de llegada debe ser posterior a la de salida.',
             'delivery_date.after_or_equal' => 'La fecha de entrega debe ser posterior a la de recogida.',

@@ -520,7 +520,7 @@ export default function ShippingOrderEdit({
                             <div className="grid gap-4 md:grid-cols-3">
                                 <div className="space-y-2">
                                     <Label htmlFor="transport_mode_id">
-                                        Modo de Transporte *
+                                        Modo de Transporte
                                     </Label>
                                     <Select
                                         value={data.transport_mode_id}
@@ -557,7 +557,7 @@ export default function ShippingOrderEdit({
 
                                 <div className="space-y-2">
                                     <Label htmlFor="service_type_id">
-                                        Tipo de Servicio *
+                                        Tipo de Servicio
                                     </Label>
                                     <Select
                                         value={data.service_type_id}
