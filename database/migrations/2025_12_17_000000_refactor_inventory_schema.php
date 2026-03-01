@@ -21,8 +21,9 @@ return new class extends Migration
 
         Schema::table('inventory_items', function (Blueprint $table) {
             $table->string('item_code', 100)->nullable(false)->change();
-            // Drop indexes using array syntax which Laravel translates to index name
-             $table->dropForeign(['warehouse_id']);
+            // Drop foreign keys BEFORE dropping indexes (MySQL requires an index for FK columns)
+            $table->dropForeign(['warehouse_id']);
+            $table->dropForeign(['customer_id']);
             $table->dropIndex(['warehouse_id', 'sku']);
             $table->dropIndex(['customer_id', 'sku']);
             $table->dropColumn('sku');
@@ -30,10 +31,15 @@ return new class extends Migration
             // Add new indexes
             $table->index(['warehouse_id', 'item_code']);
             $table->index(['customer_id', 'item_code']);
+            // Re-create foreign keys
             $table->foreign('warehouse_id')
-          ->references('id')
-          ->on('warehouses')
-          ->cascadeOnDelete();
+                ->references('id')
+                ->on('warehouses')
+                ->cascadeOnDelete();
+            $table->foreign('customer_id')
+                ->references('id')
+                ->on('customers')
+                ->cascadeOnDelete();
         });
 
         // 2. Add warehouse_receipt_line_id to inventory_items
@@ -114,12 +120,24 @@ return new class extends Migration
 
         Schema::table('inventory_items', function (Blueprint $table) {
             $table->string('sku', 100)->nullable(false)->change();
+            // Drop foreign keys BEFORE dropping indexes (MySQL requires an index for FK columns)
+            $table->dropForeign(['warehouse_id']);
+            $table->dropForeign(['customer_id']);
             $table->dropIndex(['warehouse_id', 'item_code']);
             $table->dropIndex(['customer_id', 'item_code']);
             $table->dropColumn('item_code');
 
             $table->index(['warehouse_id', 'sku']);
             $table->index(['customer_id', 'sku']);
+            // Re-create foreign keys
+            $table->foreign('warehouse_id')
+                ->references('id')
+                ->on('warehouses')
+                ->cascadeOnDelete();
+            $table->foreign('customer_id')
+                ->references('id')
+                ->on('customers')
+                ->cascadeOnDelete();
         });
     }
 };
