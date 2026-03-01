@@ -8,10 +8,10 @@ export default function AppLogo() {
             </div>
             <div className="ml-3 grid flex-1 text-left">
                 <span className="truncate text-base leading-tight font-bold tracking-tight">
-                    Stone Logistic
+                    Santoral Logistic
                 </span>
                 <span className="truncate text-xs font-medium text-muted-foreground">
-                    Platform
+                    Cima Alta
                 </span>
             </div>
         </>
