@@ -169,7 +169,13 @@ class RoleSeeder extends Seeder
     public function run(): void
     {
         // Reset cached roles and permissions
-        app()[PermissionRegistrar::class]->forgetCachedPermissions();
+        // Wrapped in try-catch because the cache table may not exist yet
+        // during migrate:fresh --seed (Spatie uses database cache driver)
+        try {
+            app()[PermissionRegistrar::class]->forgetCachedPermissions();
+        } catch (\Throwable $e) {
+            $this->command->warn('Could not clear permission cache: ' . $e->getMessage());
+        }
 
         foreach ($this->roles as $roleData) {
             $role = Role::firstOrCreate(
