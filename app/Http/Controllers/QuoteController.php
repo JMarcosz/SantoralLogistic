@@ -139,10 +139,10 @@ class QuoteController extends Controller
             'projects' => Project::select('id', 'name', 'code')->where('is_active', true)->orderBy('name')->get(),
             'carriers' => Carrier::select('id', 'name', 'code')->where('is_active', true)->orderBy('name')->get(),
             'issuingCompanies' => CompanySetting::select('id', 'name')->orderBy('name')->get(),
-            'divisions' => [
-                ['value' => 'Sales', 'label' => 'Sales'],
-                ['value' => 'Select', 'label' => 'Select'],
-            ],
+            'divisions' => Division::select('id', 'name', 'code')
+                ->where('is_active', true)
+                ->orderBy('name')
+                ->get(),
         ]);
     }
 
@@ -302,10 +302,10 @@ class QuoteController extends Controller
             'projects' => Project::select('id', 'name', 'code')->where('is_active', true)->orderBy('name')->get(),
             'carriers' => Carrier::select('id', 'name', 'code')->where('is_active', true)->orderBy('name')->get(),
             'issuingCompanies' => CompanySetting::select('id', 'name')->orderBy('name')->get(),
-            'divisions' => [
-                ['value' => 'Sales', 'label' => 'Sales'],
-                ['value' => 'Select', 'label' => 'Select'],
-            ],
+            'divisions' => Division::select('id', 'name', 'code')
+                ->where('is_active', true)
+                ->orderBy('name')
+                ->get(),
         ]);
     }
 
