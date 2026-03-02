@@ -160,17 +160,19 @@
     --popover: oklch(0.24 0.034 232);
     --popover-foreground: oklch(0.985 0 0);
 
-    --primary: oklch(75.47% 0.15436 86.49); /* Brighter in dark mode */
+    --primary: oklch(
+        75.47% 0.15436 86.49
+    ); /* color de los contenedores del sidebar */
     --primary-foreground: oklch(0.99 0 0);
     --primary-hover: oklch(0.79 0.17 87);
 
-    --secondary: oklch(0.35 0.038 219);
+    --secondary: oklch(29.412% 0.06889 53.77);
     --secondary-foreground: oklch(0.985 0 0);
 
     --muted: oklch(0.32 0.022 220);
     --muted-foreground: oklch(0.75 0.012 210);
 
-    --accent: oklch(0.38 0.042 219);
+    --accent: oklch(43.904% 0.11598 48.944);
     --accent-foreground: oklch(0.985 0 0);
 
     --destructive: oklch(0.55 0.22 27.325);
@@ -299,8 +301,8 @@
     .gradient-primary {
         background: linear-gradient(
             135deg,
-            oklch(0.62 0.18 145) 0%,
-            oklch(0.58 0.19 145) 100%
+            oklch(0.79 0.17 87) 0%,
+            oklch(0.79 0.17 87) 100%
         );
     }
 

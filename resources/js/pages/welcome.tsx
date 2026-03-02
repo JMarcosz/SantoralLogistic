@@ -147,9 +147,10 @@ export default function Welcome() {
                             aria-label="Top navigation"
                         >
                             <div className="flex items-center space-x-3">
-                                <div className="gradient-primary shadow-premium-md glow-primary flex h-10 w-10 items-center justify-center rounded-lg">
-                                    <AppLogoIcon className="h-6 w-6" />
+                                <div className="shadow-premium-md glow-primary flex h-10 w-10 items-center justify-center rounded-lg">
+                                    <AppLogoIcon glow={true} />
                                 </div>
+
                                 <div className="leading-tight">
                                     <div className="text-xl font-extrabold text-foreground">
                                         Stone Logistic Platform
@@ -502,15 +503,15 @@ export default function Welcome() {
                         <div className="grid gap-8 lg:grid-cols-3">
                             <div>
                                 <div className="flex items-center space-x-3">
-                                    <div className="gradient-primary shadow-premium-md glow-primary flex h-10 w-10 items-center justify-center rounded-lg">
-                                        <AppLogoIcon className="h-6 w-6" />
+                                    <div>
+                                        <AppLogoIcon />
                                     </div>
                                     <div className="leading-tight">
                                         <div className="text-xl font-extrabold text-foreground">
-                                            Stone Logistic Platform
+                                            Cafe Santoral
                                         </div>
                                         <div className="text-xs font-medium text-muted-foreground">
-                                            Maed Logistic Trading
+                                            Cima alta platform
                                         </div>
                                     </div>
                                 </div>

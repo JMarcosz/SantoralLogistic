@@ -1,39 +1,31 @@
-import type { SVGAttributes } from 'react';
+import icon128 from './icon-128.png';
 
-type AppLogoIconProps = SVGAttributes<SVGElement> & {
-    primaryColor?: string; // top face
-    leftColor?: string; // left face
-    rightColor?: string; // right face
-};
+interface AppLogoIconProps {
+    glow?: boolean;
+}
 
-export default function AppLogoIcon({
-    primaryColor,
-    leftColor,
-    rightColor,
-    ...props
-}: AppLogoIconProps) {
-    const top = primaryColor ?? 'var(--primary)';
-    const left = leftColor ?? 'var(--foreground)';
-    const right = rightColor ?? 'var(--background)';
-
+export default function AppLogoIcon({ glow }: AppLogoIconProps) {
     return (
-        <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 320 320"
-            role="img"
-            aria-label="Stone Logistic Platform Cube Logo"
-            {...props}
+        <div
+            className={`gradient-primary shadow-premium-md ${glow ? '' : 'glow-primary'} flex h-10 w-10 items-center justify-center rounded-lg`}
+            style={{
+                background: 'linear-gradient(135deg, #351804 0%, #0f0000 100%)',
+            }}
         >
-            <g transform="translate(30,20)">
-                {/* Top face */}
-                <polygon points="130,0 260,70 130,140 0,70" fill={top} />
-
-                {/* Left face */}
-                <polygon points="0,70 130,140 130,280 0,210" fill={left} />
-
-                {/* Right face */}
-                <polygon points="260,70 130,140 130,280 260,210" fill={right} />
-            </g>
-        </svg>
+            <img
+                src={icon128}
+                alt="Santoral Logo"
+                className="h-8 w-8 object-contain"
+            />
+        </div>
     );
+}
+
+{
+    /* <div
+            className="flex aspect-square size-10 items-center justify-center rounded-xl bg-gradient-to-br shadow-md shadow-primary/15 transition-all group-hover:scale-105 group-hover:shadow-xl group-hover:shadow-primary/40"
+            style={{
+                background: 'linear-gradient(135deg, #351804 0%, #0f0000 100%)',
+            }}
+        ></div> */
 }
