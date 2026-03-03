@@ -21,7 +21,7 @@ trait GeneratesQuoteNumber
         // Get the last quote number for this year
         $lastQuote = Quote::withTrashed()
             ->where('quote_number', 'like', "{$prefix}%")
-            ->orderByRaw("CAST(SUBSTRING(quote_number, 9) AS INTEGER) DESC")
+            ->orderByRaw("CAST(SUBSTRING(quote_number, 9) AS UNSIGNED) DESC")
             ->first();
 
         if ($lastQuote) {
