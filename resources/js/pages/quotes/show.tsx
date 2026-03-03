@@ -308,7 +308,7 @@ export default function QuoteShow({
                             )}
 
                             {/* Convert Button */}
-                            {can.convert && (
+                            {can.convert && quote.status === 'approved' && !shippingOrder && (
                                 <Button
                                     variant="default"
                                     onClick={() =>
