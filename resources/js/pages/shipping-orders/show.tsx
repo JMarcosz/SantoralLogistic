@@ -1392,14 +1392,17 @@ export default function ShippingOrderShow({
                             ) : null}
 
                             {/* Reserve Inventory Button */}
-                            {can.reserveInventory && order.customer && (
-                                <ReserveInventoryDialog
-                                    orderId={order.id}
-                                    customerId={order.customer.id}
-                                    reservations={inventoryReservations}
-                                    onReserve={() => router.reload()}
-                                />
-                            )}
+                            {can.reserveInventory &&
+                                order.customer &&
+                                (order.status === 'booked' ||
+                                    order.status === 'in_transit') && (
+                                    <ReserveInventoryDialog
+                                        orderId={order.id}
+                                        customerId={order.customer.id}
+                                        reservations={inventoryReservations}
+                                        onReserve={() => router.reload()}
+                                    />
+                                )}
 
                             {/* Warehouse Order Button */}
                             {can.createWarehouseOrder &&
@@ -1726,8 +1729,8 @@ export default function ShippingOrderShow({
                                 {modeIcons[
                                     order.transport_mode?.code || ''
                                 ] || (
-                                    <Plane className="h-6 w-6 text-muted-foreground" />
-                                )}
+                                        <Plane className="h-6 w-6 text-muted-foreground" />
+                                    )}
                                 <ArrowRight className="h-8 w-8 text-muted-foreground" />
                             </div>
                             <div>
@@ -1801,54 +1804,54 @@ export default function ShippingOrderShow({
                 {(order.total_pieces ||
                     order.total_weight_kg ||
                     order.total_volume_cbm) && (
-                    <Card>
-                        <CardHeader>
-                            <CardTitle className="text-lg">
-                                Detalles de Carga
-                            </CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <div className="grid grid-cols-3 gap-6 text-center">
-                                {order.total_pieces && (
-                                    <div>
-                                        <p className="text-2xl font-bold">
-                                            {order.total_pieces}
-                                        </p>
-                                        <p className="text-sm text-muted-foreground">
-                                            Piezas
-                                        </p>
-                                    </div>
-                                )}
-                                {order.total_weight_kg && (
-                                    <div>
-                                        <p className="text-2xl font-bold">
-                                            {formatNumber(
-                                                order.total_weight_kg,
-                                            )}{' '}
-                                            kg
-                                        </p>
-                                        <p className="text-sm text-muted-foreground">
-                                            Peso
-                                        </p>
-                                    </div>
-                                )}
-                                {order.total_volume_cbm && (
-                                    <div>
-                                        <p className="text-2xl font-bold">
-                                            {formatNumber(
-                                                order.total_volume_cbm,
-                                            )}{' '}
-                                            CBM
-                                        </p>
-                                        <p className="text-sm text-muted-foreground">
-                                            Volumen
-                                        </p>
-                                    </div>
-                                )}
-                            </div>
-                        </CardContent>
-                    </Card>
-                )}
+                        <Card>
+                            <CardHeader>
+                                <CardTitle className="text-lg">
+                                    Detalles de Carga
+                                </CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                <div className="grid grid-cols-3 gap-6 text-center">
+                                    {order.total_pieces && (
+                                        <div>
+                                            <p className="text-2xl font-bold">
+                                                {order.total_pieces}
+                                            </p>
+                                            <p className="text-sm text-muted-foreground">
+                                                Piezas
+                                            </p>
+                                        </div>
+                                    )}
+                                    {order.total_weight_kg && (
+                                        <div>
+                                            <p className="text-2xl font-bold">
+                                                {formatNumber(
+                                                    order.total_weight_kg,
+                                                )}{' '}
+                                                kg
+                                            </p>
+                                            <p className="text-sm text-muted-foreground">
+                                                Peso
+                                            </p>
+                                        </div>
+                                    )}
+                                    {order.total_volume_cbm && (
+                                        <div>
+                                            <p className="text-2xl font-bold">
+                                                {formatNumber(
+                                                    order.total_volume_cbm,
+                                                )}{' '}
+                                                CBM
+                                            </p>
+                                            <p className="text-sm text-muted-foreground">
+                                                Volumen
+                                            </p>
+                                        </div>
+                                    )}
+                                </div>
+                            </CardContent>
+                        </Card>
+                    )}
 
                 {/* Placeholders for future features */}
                 <div className="grid gap-6 lg:grid-cols-2">
@@ -2115,7 +2118,7 @@ export default function ShippingOrderShow({
                                     {order.pickup_orders?.length || 0})
                                 </h4>
                                 {order.pickup_orders &&
-                                order.pickup_orders.length > 0 ? (
+                                    order.pickup_orders.length > 0 ? (
                                     <div className="space-y-2">
                                         {order.pickup_orders.map((po) => (
                                             <Link
@@ -2135,15 +2138,15 @@ export default function ShippingOrderShow({
                                                 <Badge
                                                     className={
                                                         po.status ===
-                                                        'completed'
+                                                            'completed'
                                                             ? 'bg-green-100 text-green-800'
                                                             : po.status ===
                                                                 'in_progress'
-                                                              ? 'bg-yellow-100 text-yellow-800'
-                                                              : po.status ===
-                                                                  'assigned'
-                                                                ? 'bg-blue-100 text-blue-800'
-                                                                : 'bg-gray-100 text-gray-800'
+                                                                ? 'bg-yellow-100 text-yellow-800'
+                                                                : po.status ===
+                                                                    'assigned'
+                                                                    ? 'bg-blue-100 text-blue-800'
+                                                                    : 'bg-gray-100 text-gray-800'
                                                     }
                                                 >
                                                     {po.status}
@@ -2166,7 +2169,7 @@ export default function ShippingOrderShow({
                                     {order.delivery_orders?.length || 0})
                                 </h4>
                                 {order.delivery_orders &&
-                                order.delivery_orders.length > 0 ? (
+                                    order.delivery_orders.length > 0 ? (
                                     <div className="space-y-2">
                                         {order.delivery_orders.map((de) => (
                                             <Link
@@ -2186,15 +2189,15 @@ export default function ShippingOrderShow({
                                                 <Badge
                                                     className={
                                                         de.status ===
-                                                        'completed'
+                                                            'completed'
                                                             ? 'bg-green-100 text-green-800'
                                                             : de.status ===
                                                                 'in_progress'
-                                                              ? 'bg-yellow-100 text-yellow-800'
-                                                              : de.status ===
-                                                                  'assigned'
-                                                                ? 'bg-blue-100 text-blue-800'
-                                                                : 'bg-gray-100 text-gray-800'
+                                                                ? 'bg-yellow-100 text-yellow-800'
+                                                                : de.status ===
+                                                                    'assigned'
+                                                                    ? 'bg-blue-100 text-blue-800'
+                                                                    : 'bg-gray-100 text-gray-800'
                                                     }
                                                 >
                                                     {de.status}
