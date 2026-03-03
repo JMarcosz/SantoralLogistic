@@ -102,7 +102,7 @@ class ShippingOrder extends Model
 
         $lastOrder = static::withTrashed()
             ->where('order_number', 'like', "{$prefix}%")
-            ->orderByRaw("CAST(SUBSTRING(order_number, 9) AS INTEGER) DESC")
+            ->orderByRaw("CAST(SUBSTRING(order_number, 9) AS UNSIGNED) DESC")
             ->first();
 
         if ($lastOrder) {
@@ -292,6 +292,7 @@ class ShippingOrder extends Model
         return $this->publicLink && $this->publicLink->isValid();
     }
 
+
     /**
      * Footer terms relationship.
      */
@@ -308,6 +309,7 @@ class ShippingOrder extends Model
         return $this->hasMany(Charge::class)->orderBy('sort_order', 'asc');
     }
 
+    
     /**
      * PreInvoices generated from this shipping order.
      */
