@@ -23,6 +23,11 @@ return new class extends Migration
             DB::statement("ALTER TABLE inventory_movements ALTER COLUMN movement_type TYPE VARCHAR(50) USING movement_type::text");
         }
 
+        // MySQL: Modify the enum column to varchar
+        if (DB::connection()->getDriverName() === 'mysql') {
+            DB::statement("ALTER TABLE inventory_movements MODIFY COLUMN movement_type VARCHAR(50) NOT NULL");
+        }
+
         // SQLite: Recreate the table with varchar instead of enum
         // This is necessary because SQLite doesn't allow ALTER COLUMN
         if (DB::connection()->getDriverName() === 'sqlite') {
