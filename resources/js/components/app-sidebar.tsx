@@ -13,25 +13,24 @@ import { dashboard } from '@/routes';
 import { type NavGroup } from '@/types';
 import { Link } from '@inertiajs/react';
 import {
-    BarChart3,
-    Blocks,
+    /*     BarChart3,
+     */ Blocks,
     BookOpen,
     Building2,
     Calculator,
-    Calendar,
-    ClipboardList,
+    /*     Calendar,
+     */ ClipboardList,
     DollarSign,
-    FileDown,
     FileSpreadsheet,
     FileText,
     Folder,
     Globe,
-    History,
-    LayoutGrid,
+    /*     History,
+     */ LayoutGrid,
     MapPin,
     Package,
-    Settings,
-    Settings2,
+    /*     Settings,
+     */ Settings2,
     Shield,
     Ship,
     ShoppingCart,
@@ -139,7 +138,7 @@ const navGroups: NavGroup[] = [
             },
         ],
     },
-    {
+    /* {
         title: 'Reportes',
         items: [
             {
@@ -170,7 +169,7 @@ const navGroups: NavGroup[] = [
                 permission: 'billing.exports.view_any',
             },
         ],
-    },
+    }, */
     {
         title: 'Facturación',
         items: [
@@ -201,7 +200,7 @@ const navGroups: NavGroup[] = [
             },
         ],
     },
-    {
+    /* {
         title: 'Contabilidad',
         items: [
             {
@@ -259,7 +258,7 @@ const navGroups: NavGroup[] = [
                 permission: 'accounting.view',
             },
         ],
-    },
+    }, */
     {
         title: 'Administración',
         items: [

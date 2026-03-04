@@ -319,7 +319,7 @@
     </header>
 
     <footer>
-        MAED LOGISTIC PLATFORM - RNC: 123456789 | Generado el {{ now()->format('d/m/Y H:i') }}
+        Café Santoral Logistic - RNC: 123456789 | Generado el {{ now()->format('d/m/Y H:i') }}
     </footer>
 
     <div class="container">

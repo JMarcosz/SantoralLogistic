@@ -153,10 +153,11 @@ export default function Welcome() {
 
                                 <div className="leading-tight">
                                     <div className="text-xl font-extrabold text-foreground">
-                                        Stone Logistic Platform
+                                        Café Santoral Logistic
                                     </div>
                                     <div className="text-xs font-medium text-muted-foreground">
-                                        ERP operativo para Maed Logistic Trading
+                                        Operación logística, controlada y
+                                        trazable
                                     </div>
                                 </div>
                             </div>
@@ -207,11 +208,12 @@ export default function Welcome() {
                                 </h1>
 
                                 <p className="text-xl leading-relaxed text-muted-foreground">
-                                    Stone Logistic Platform centraliza el
-                                    trabajo diario de Maed Logistic Trading:
-                                    órdenes, almacén, tracking por eventos,
-                                    alertas e indicadores operativos en una sola
-                                    interfaz.
+                                    Santoral Logistic es la plataforma operativa
+                                    diseñada para gestionar de forma eficiente y
+                                    segura cada etapa del proceso logístico,
+                                    desde la recepción de mercancías hasta su
+                                    entrega final, principalmente de cafés de
+                                    alta calidad.
                                 </p>
 
                                 <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
@@ -409,9 +411,11 @@ export default function Welcome() {
                                 </span>
                             </h2>
                             <p className="mx-auto max-w-2xl text-lg text-muted-foreground">
-                                Diseñado para el día a día de Maed Logistic
-                                Trading: trazabilidad, control y visibilidad
-                                operativa.
+                                Diseñado para el día a día de Café Santoral.
+                                Desde el envio de sus productos, hasta la
+                                entrega final, con control total y visibilidad
+                                en cada paso, administración de clientes y
+                                facturas de forma dinamica y ordenada.
                             </p>
                         </div>
 
@@ -508,7 +512,7 @@ export default function Welcome() {
                                     </div>
                                     <div className="leading-tight">
                                         <div className="text-xl font-extrabold text-foreground">
-                                            Cafe Santoral
+                                            Café Santoral Logistic
                                         </div>
                                         <div className="text-xs font-medium text-muted-foreground">
                                             Cima alta platform
@@ -561,7 +565,7 @@ export default function Welcome() {
 
                         <div className="mt-8 border-t border-border pt-8 text-center text-sm text-muted-foreground">
                             <p>
-                                © {new Date().getFullYear()} Stone Logistic
+                                © {new Date().getFullYear()} Santoral Logistic
                                 Platform. Todos los derechos reservados.
                             </p>
                         </div>

@@ -6,7 +6,7 @@ export default function AppLogo() {
             <AppLogoIcon glow={true} />
             <div className="ml-3 grid flex-1 text-left">
                 <span className="truncate text-base leading-tight font-bold tracking-tight">
-                    Santoral Logistic
+                    Café Santoral Logistic
                 </span>
                 <span className="truncate text-xs font-medium text-muted-foreground">
                     Cima Alta
