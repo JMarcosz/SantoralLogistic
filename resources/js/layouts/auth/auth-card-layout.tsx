@@ -57,7 +57,7 @@ export default function AuthCardLayout({
                                 <div className="mt-6 rounded-lg border border-border/60 bg-card/60 p-3 text-xs text-muted-foreground">
                                     Acceso interno para{' '}
                                     <span className="font-semibold text-foreground">
-                                        Maed Logistic Trading
+                                        Café Santoral Logistic
                                     </span>
                                     . Si no tienes credenciales, contacta al
                                     administrador del sistema.
