@@ -180,6 +180,22 @@ class Quote extends Model
     }
 
     /**
+     * Get the sales order created from this quote.
+     */
+    public function salesOrder(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(SalesOrder::class);
+    }
+
+    /**
+     * Check if this quote has been converted to a sales order.
+     */
+    public function hasSalesOrder(): bool
+    {
+        return $this->salesOrder()->exists();
+    }
+
+    /**
      * Payment terms relationship.
      */
     public function paymentTerms(): BelongsTo

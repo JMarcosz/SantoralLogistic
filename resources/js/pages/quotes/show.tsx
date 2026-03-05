@@ -49,6 +49,7 @@ import {
     ArrowRight,
     Check,
     CheckCircle,
+    ClipboardList,
     Edit,
     FileText,
     Plane,
@@ -65,6 +66,7 @@ interface Props {
     quote: Quote;
     company: Company | null;
     shippingOrder: { id: number; order_number: string } | null;
+    salesOrder: { id: number; order_number: string; status: string } | null;
     can: {
         update: boolean;
         delete: boolean;
@@ -101,6 +103,7 @@ export default function QuoteShow({
     quote,
     company: _company,
     shippingOrder,
+    salesOrder,
     can,
 }: Props) {
     const { flash } = usePage().props as {
@@ -158,6 +161,11 @@ export default function QuoteShow({
             title: '¿Convertir a orden de envío?',
             description:
                 'Se creará una nueva orden de envío basada en esta cotización.',
+        },
+        'convert-to-sales-order': {
+            title: '¿Convertir a Orden de Pedido?',
+            description:
+                'Se creará una nueva orden de pedido basada en esta cotización. El inventario se reservará al confirmar la orden.',
         },
     };
 
@@ -318,7 +326,23 @@ export default function QuoteShow({
                                     }
                                 >
                                     <Ship className="mr-2 h-4 w-4" />
-                                    Convertir a Orden
+                                    Convertir a Orden de Envío
+                                </Button>
+                            )}
+
+                            {/* Convert to Sales Order */}
+                            {can.convert && quote.status === 'approved' && !salesOrder && (
+                                <Button
+                                    variant="default"
+                                    className="bg-indigo-600 hover:bg-indigo-700"
+                                    onClick={() =>
+                                        openConfirmDialog(
+                                            'convert-to-sales-order',
+                                        )
+                                    }
+                                >
+                                    <ClipboardList className="mr-2 h-4 w-4" />
+                                    Convertir a Orden de Pedido
                                 </Button>
                             )}
                         </div>
@@ -329,9 +353,26 @@ export default function QuoteShow({
                         <div className="mt-4 rounded-lg border border-emerald-500/30 bg-emerald-500/10 p-3 text-sm">
                             <span className="text-emerald-400">
                                 ✓ Convertida a Orden de Envío:{' '}
-                                <span className="font-semibold">
+                                <Link
+                                    href={`/shipping-orders/${shippingOrder.id}`}
+                                    className="font-semibold underline hover:no-underline"
+                                >
                                     {shippingOrder.order_number}
-                                </span>
+                                </Link>
+                            </span>
+                        </div>
+                    )}
+
+                    {salesOrder && (
+                        <div className="mt-4 rounded-lg border border-indigo-500/30 bg-indigo-500/10 p-3 text-sm">
+                            <span className="text-indigo-400">
+                                ✓ Convertida a Orden de Pedido:{' '}
+                                <Link
+                                    href={`/sales-orders/${salesOrder.id}`}
+                                    className="font-semibold underline hover:no-underline"
+                                >
+                                    {salesOrder.order_number}
+                                </Link>
                             </span>
                         </div>
                     )}
@@ -468,54 +509,54 @@ export default function QuoteShow({
                 {(quote.total_pieces ||
                     quote.total_weight_kg ||
                     quote.total_volume_cbm) && (
-                    <Card>
-                        <CardHeader>
-                            <CardTitle className="text-lg">
-                                Detalles de Carga
-                            </CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <div className="grid grid-cols-3 gap-6 text-center">
-                                {quote.total_pieces && (
-                                    <div>
-                                        <p className="text-2xl font-bold">
-                                            {quote.total_pieces}
-                                        </p>
-                                        <p className="text-sm text-muted-foreground">
-                                            Piezas
-                                        </p>
-                                    </div>
-                                )}
-                                {quote.total_weight_kg && (
-                                    <div>
-                                        <p className="text-2xl font-bold">
-                                            {formatNumber(
-                                                quote.total_weight_kg,
-                                            )}{' '}
-                                            kg
-                                        </p>
-                                        <p className="text-sm text-muted-foreground">
-                                            Peso
-                                        </p>
-                                    </div>
-                                )}
-                                {quote.total_volume_cbm && (
-                                    <div>
-                                        <p className="text-2xl font-bold">
-                                            {formatNumber(
-                                                quote.total_volume_cbm,
-                                            )}{' '}
-                                            CBM
-                                        </p>
-                                        <p className="text-sm text-muted-foreground">
-                                            Volumen
-                                        </p>
-                                    </div>
-                                )}
-                            </div>
-                        </CardContent>
-                    </Card>
-                )}
+                        <Card>
+                            <CardHeader>
+                                <CardTitle className="text-lg">
+                                    Detalles de Carga
+                                </CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                <div className="grid grid-cols-3 gap-6 text-center">
+                                    {quote.total_pieces && (
+                                        <div>
+                                            <p className="text-2xl font-bold">
+                                                {quote.total_pieces}
+                                            </p>
+                                            <p className="text-sm text-muted-foreground">
+                                                Piezas
+                                            </p>
+                                        </div>
+                                    )}
+                                    {quote.total_weight_kg && (
+                                        <div>
+                                            <p className="text-2xl font-bold">
+                                                {formatNumber(
+                                                    quote.total_weight_kg,
+                                                )}{' '}
+                                                kg
+                                            </p>
+                                            <p className="text-sm text-muted-foreground">
+                                                Peso
+                                            </p>
+                                        </div>
+                                    )}
+                                    {quote.total_volume_cbm && (
+                                        <div>
+                                            <p className="text-2xl font-bold">
+                                                {formatNumber(
+                                                    quote.total_volume_cbm,
+                                                )}{' '}
+                                                CBM
+                                            </p>
+                                            <p className="text-sm text-muted-foreground">
+                                                Volumen
+                                            </p>
+                                        </div>
+                                    )}
+                                </div>
+                            </CardContent>
+                        </Card>
+                    )}
 
                 {/* Lines */}
                 <Card>

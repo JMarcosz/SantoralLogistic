@@ -234,7 +234,8 @@ export interface QuoteLine {
     id: number;
     quote_id: number;
     product_service_id: number;
-    product_service?: { id: number; code: string; name: string };
+    product_service?: { id: number; code: string; name: string; type?: string };
+    line_type?: 'product' | 'service';
     description: string | null;
     quantity: number;
     unit_price: number;
@@ -301,6 +302,7 @@ export interface Quote {
     lines?: QuoteLine[];
     lines_count?: number;
     has_shipping_order?: boolean;
+    has_sales_order?: boolean;
     items?: QuoteItem[];
     // New fields
     shipper_id?: number | null;

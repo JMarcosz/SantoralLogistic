@@ -12,6 +12,7 @@ class WarehouseReceiptLine extends Model
 
     protected $fillable = [
         'warehouse_receipt_id',
+        'product_service_id',
         'item_code',
         'description',
         'expected_qty',
@@ -34,6 +35,14 @@ class WarehouseReceiptLine extends Model
     public function receipt(): BelongsTo
     {
         return $this->belongsTo(WarehouseReceipt::class, 'warehouse_receipt_id');
+    }
+
+    /**
+     * Get the product/service linked to this receipt line.
+     */
+    public function productService(): BelongsTo
+    {
+        return $this->belongsTo(ProductService::class);
     }
 
     /**

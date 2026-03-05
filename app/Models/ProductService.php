@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class ProductService extends Model
 {
@@ -94,5 +95,37 @@ class ProductService extends Model
     public function getDisplayLabelAttribute(): string
     {
         return "{$this->code} - {$this->name}";
+    }
+
+    /**
+     * Inventory items linked to this product.
+     */
+    public function inventoryItems(): HasMany
+    {
+        return $this->hasMany(InventoryItem::class, 'product_service_id');
+    }
+
+    /**
+     * Check if this is a product (inventoriable).
+     */
+    public function isProduct(): bool
+    {
+        return $this->type === 'product';
+    }
+
+    /**
+     * Check if this is a service.
+     */
+    public function isService(): bool
+    {
+        return $this->type === 'service';
+    }
+
+    /**
+     * Check if this is a fee.
+     */
+    public function isFee(): bool
+    {
+        return $this->type === 'fee';
     }
 }

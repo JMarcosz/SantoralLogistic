@@ -1,0 +1,384 @@
+# 📊 Análisis del Modelo de Negocio y Arquitectura — MAED Logistic Platform
+
+> Evaluación comprehensiva del sistema actual como base para planificación de desarrollo futuro.
+
+---
+
+## 1. Resumen Ejecutivo
+
+**MAED Logistic Platform** es un sistema monolítico de gestión logística internacional desarrollado para **Maed Logistic Trading** (República Dominicana). El sistema digitaliza el ciclo completo desde la cotización de servicios logísticos hasta el cobro, integrando módulos de TMS (Transport Management System), WMS (Warehouse Management System), CRM, facturación fiscal (DGII) y contabilidad.
+
+### Estado Actual
+- **En producción** con entorno local usando Laravel Herd + MySQL
+- **MVP completado** con funcionalidad operativa en la mayoría de módulos
+- **Módulo de reportes**: pendiente de implementación
+
+---
+
+## 2. Modelo de Negocio
+
+### 2.1 Propuesta de Valor
+Centralizar la operación logística internacional en una sola plataforma, reemplazando procesos manuales y sistemas legados.
+
+### 2.2 Flujo de Negocio Principal
+
+```mermaid
+flowchart LR
+    A["Cotización"] --> B["Orden de Embarque"]
+    B --> C["Logística\n(Recogida/Entrega)"]
+    B --> D["Almacén\n(WMS)"]
+    B --> E["Pre-Factura"]
+    E --> F["Factura Fiscal\n(NCF/DGII)"]
+    F --> G["Cobro/Pago"]
+    G --> H["Contabilidad"]
+```
+
+### 2.3 Módulos Funcionales
+
+| Módulo | Descripción | Estado |
+|--------|-------------|--------|
+| **CRM** | Gestión de clientes, contactos, prospectos | ✅ Completo |
+| **Cotizaciones (Quotes)** | Oferta de precios para servicios logísticos | ✅ Completo |
+| **Órdenes de Embarque** | Documento operativo central, tracking multi-modal | ✅ Completo |
+| **Logística (P&D)** | Pickup/Delivery Orders con drivers, stops, POD | ✅ Completo |
+| **Almacén (WMS)** | Receipts, inventario, ubicaciones, picking, conteo cíclico | ✅ Completo |
+| **Facturación** | Pre-facturas + Facturas Fiscales con NCF (DGII compliance) | ✅ Completo |
+| **Cobros/Pagos** | Multi-invoice, multi-moneda, asignaciones | ✅ Completo |
+| **Contabilidad** | Plan de cuentas, asientos, GL, estados financieros, conciliación bancaria | ✅ Completo |
+| **Reportes** | KPIs y reportes operativos | ⚠️ Parcial |
+| **Settings** | Monedas, puertos, modos transporte, paquetes, tarifas, términos | ✅ Completo |
+
+### 2.4 Entidades Clave del Dominio (67 Modelos)
+
+```mermaid
+erDiagram
+    Customer ||--o{ Quote : solicita
+    Customer ||--o{ ShippingOrder : tiene
+    Customer ||--o{ InventoryItem : posee
+    Quote ||--o| ShippingOrder : "genera"
+    ShippingOrder ||--o{ Charge : tiene
+    ShippingOrder ||--o{ PickupOrder : genera
+    ShippingOrder ||--o{ DeliveryOrder : genera
+    ShippingOrder ||--o{ WarehouseOrder : genera
+    ShippingOrder ||--o{ PreInvoice : factura
+    ShippingOrder ||--o{ Invoice : "factura directa"
+    Charge ||--o{ PreInvoice : "genera"
+    PreInvoice ||--o| Invoice : "convierte"
+    Invoice ||--o{ PaymentAllocation : recibe
+    Payment ||--o{ PaymentAllocation : asigna
+    WarehouseReceipt ||--o{ InventoryItem : crea
+    InventoryItem ||--o{ InventoryReservation : reserva
+    InventoryItem ||--o{ InventoryMovement : registra
+```
+
+### 2.5 Regulaciones / Compliance
+- **DGII** (Dirección General de Impuestos Internos, RD): Gestión de NCF (Números de Comprobante Fiscal), tipos B01/B02, secuencias fiscales
+- **ITBIS**: Cálculo automático de impuestos separando montos gravados y exentos
+- **Exportación DGII**: Servicio dedicado `DgiiExportService` para reportes fiscales (607/606/608)
+
+---
+
+## 3. Arquitectura Técnica
+
+### 3.1 Stack Tecnológico
+
+| Capa | Tecnología | Versión |
+|------|-----------|---------|
+| **Lenguaje Backend** | PHP | 8.2+ |
+| **Framework Backend** | Laravel | 12 |
+| **Frontend Runtime** | React | 19 |
+| **Bridge SSR** | Inertia.js | 2.x |
+| **CSS Framework** | TailwindCSS | 4.0 |
+| **UI Components** | shadcn/ui (Radix UI) | Múltiples |
+| **Data Tables** | TanStack Table | 8.x |
+| **Charts** | Recharts | 3.x |
+| **Build Tool** | Vite | 7.x |
+| **Lenguaje Frontend** | TypeScript | 5.7 |
+| **Base de Datos** | MySQL | (local via Herd) |
+| **Auth** | Laravel Fortify | 1.30 |
+| **Permisos** | Spatie Laravel Permission | 6.23 |
+| **PDF** | barryvdh/laravel-dompdf | 3.1 |
+| **Excel** | Maatwebsite Excel | 3.1 |
+| **Storage** | AWS S3 (configurado, no activo) | — |
+| **Testing** | Pest PHP | 3.x |
+
+### 3.2 Patrón Arquitectónico
+
+**Monolito Modular (MVC + Service Layer)**
+
+```
+app/
+├── Models/          (67 modelos - Capa de Datos)
+├── Http/
+│   ├── Controllers/ (60 controladores - Capa de Presentación)
+│   ├── Requests/    (51 Form Requests - Validación)
+│   ├── Resources/   (2 API Resources)
+│   └── Middleware/   (3 middleware custom)
+├── Services/        (39 servicios - Lógica de Negocio)
+├── Policies/        (28 políticas - Autorización)
+├── Enums/           (15 enums - Estado y Tipos)
+├── Actions/         (3 acciones)
+├── Events/          (2 eventos)
+├── Listeners/       (2 listeners)
+├── Exports/         (3 exports Excel)
+├── Mail/            (2 mailables)
+├── Traits/          (1 trait)
+└── Providers/       (3 providers)
+```
+
+### 3.3 Patrones de Diseño Utilizados
+
+| Patrón | Implementación |
+|--------|---------------|
+| **State Machine** | `ShippingOrderStateMachine`, `QuoteStateMachine`, `PickupOrderStateMachine`, `DeliveryOrderStateMachine`, `WarehouseReceiptStateMachine` |
+| **Service Layer** | 39 servicios separando lógica de negocio de controladores |
+| **Policy-based Authorization** | 28 políticas con Spatie Permissions (RBAC) |
+| **Form Request Validation** | 51 requests con validación declarativa |
+| **Enum-based Status** | 15 enums tipados para estados y tipos |
+| **Soft Deletes** | En modelos principales (Customer, ShippingOrder, Quote) |
+| **Auto-numbering** | Generación secuencial en ShippingOrder, Invoice, Quote, Payment |
+| **Scope Queries** | Scopes extensivos en modelos para consultas reutilizables |
+
+### 3.4 Base de Datos
+
+- **79 migraciones** cubriendo todo el schema
+- **22 seeders** para datos iniciales (monedas, puertos, permisos, roles, etc.)
+- **Motor**: MySQL (local con Herd), README menciona PostgreSQL como recomendado
+- **Sesiones/Cache/Colas**: Usando `database` driver
+
+> [!WARNING]
+> Existe una discrepancia: el README documenta PostgreSQL 16 como BD, pero el `.env` local usa MySQL. Esto puede causar incompatibilidades (ej: `ilike` en scopes del Customer model es PostgreSQL-specific).
+
+### 3.5 Frontend
+
+| Aspecto | Detalle |
+|---------|---------|
+| **Páginas** | 22 módulos con ~100 componentes de página |
+| **Routing** | Inertia.js (SPA-like con server-side routing) |
+| **State** | Props de Inertia (server-driven) |
+| **Componentes UI** | shadcn/ui sobre Radix UI primitives |
+| **Formularios** | Inertia.js useForm |
+| **Notificaciones** | Sonner (toast notifications) |
+| **Temas** | next-themes (dark mode support) |
+
+### 3.6 Estructura de Rutas (~400 rutas)
+
+| Grupo | Descripción |
+|-------|-------------|
+| `/dashboard` | Dashboard principal con KPIs |
+| `/crm/*` | Clientes y contactos |
+| `/quotes/*` | Cotizaciones CRUD + estado machine |
+| `/shipping-orders/*` | Órdenes CRUD + milestones + documentos + items + cargos + reservas |
+| `/pickup-orders/*`, `/delivery-orders/*` | Logística P&D |
+| `/warehouse-receipts/*` | Recepción de mercancía |
+| `/inventory/*` | Gestión de inventario |
+| `/cycle-counts/*` | Conteo cíclico |
+| `/warehouse-orders/*` | Picking/packing/dispatch |
+| `/billing/*` | Pre-facturas + Facturas fiscales |
+| `/payments/*` | Cobros y pagos |
+| `/accounting/*` | Contabilidad completa |
+| `/settings/*` | Configuración del sistema |
+| `/admin/*` | Secuencias fiscales |
+| `/roles/*`, `/users/*` | Gestión de usuarios |
+
+---
+
+## 4. Análisis de Fortalezas
+
+### ✅ Arquitectura
+- **Separación clara** entre controladores, servicios y modelos
+- **State machines** bien definidas para transiciones de estado
+- **RBAC** maduro con 28 políticas y Spatie Permissions
+- **Validación robusta** con 51 Form Requests
+- **Enums tipados** para estados y tipos (PHP 8.1+ enums)
+- **Documentación** exhaustiva del flujo de negocio
+
+### ✅ Funcionalidad
+- **Flujo completo** desde cotización hasta cobro con contabilidad
+- **Compliance fiscal** (DGII) con NCF y exportación 607/606/608
+- **Multi-moneda** con tasas de cambio
+- **WMS funcional** con ubicaciones, picking, conteo cíclico
+- **Tracking público** de órdenes de embarque
+- **PDF/Excel** export para documentos clave
+- **Auditoría contable** con logs detallados
+
+### ✅ Stack Moderno
+- **Laravel 12** + **React 19** + **TypeScript** + **Vite 7**
+- **Inertia.js** elimina la necesidad de API REST separada
+- **shadcn/ui** proporciona componentes accesibles y personalizables
+- **Dark mode** integrado
+
+---
+
+## 5. Análisis de Debilidades y Riesgos
+
+### ⚠️ Arquitectura
+| Área | Hallazgo |
+|------|----------|
+| **Sin API REST** | Todo está acoplado a Inertia.js; no existe API para integraciones externas o mobile |
+| **Sin colas reales** | Usa `database` como queue driver; Redis está configurado pero no se usa |
+| **Sin tests de frontend** | Las pruebas del frontend son manuales |
+| **Test backend limitados** | Solo se encontró un test de integridad de migraciones |
+| **Sin CI/CD formal** | `.github/` tiene 2 archivos pero pipeline limitado |
+| **Monolito puro** | Todos los módulos en un solo deployment — no hay microservicios ni módulos Laravel |
+| **Sin eventos de dominio** | Solo 2 eventos/listeners; la mayoría de la lógica es procedural en servicios |
+
+### ⚠️ Datos
+| Área | Hallazgo |
+|------|----------|
+| **DB inconsistencia** | README dice PostgreSQL, `.env` usa MySQL. Código contiene `ilike` (PostgreSQL-only) |
+| **Backup no configurado** | No hay estrategia de backup visible |
+| **Sin indexación optimizada** | 79 migraciones sin análisis de performance visible |
+| **Archivo backup** | Existe `AccountingPeriod_backup.php` — indica refactoring incompleto |
+
+### ⚠️ Operacional
+| Área | Hallazgo |
+|------|----------|
+| **Mail deshabilitado** | `MAIL_MAILER=log` — las notificaciones por correo no se envían |
+| **S3 deshabilitado** | `AWS_BUCKET=` vacío — almacenamiento de documentos solo local |
+| **Reportes** | Marcado como pendiente en el README |
+| **APP_NAME genérico** | `APP_NAME=Laravel` no personalizado |
+
+---
+
+## 6. Mapa de Complejidad por Módulo
+
+| Módulo | Modelos | Services | Controllers | Complejidad |
+|--------|---------|----------|-------------|-------------|
+| **ShippingOrders** | ~10 | 5 | 3 | 🔴 Alta |
+| **Accounting** | 7 | 7 | 8 | 🔴 Alta |
+| **Inventory/WMS** | 8 | 5 | 4 | 🟡 Media-Alta |
+| **Billing** | 5 | 5 | 4 | 🟡 Media-Alta |
+| **Quotes** | 5 | 5 | 1 | 🟡 Media |
+| **Payments** | 3 | 3 | 1 | 🟡 Media |
+| **CRM** | 2 | 0 | 2 | 🟢 Baja |
+| **Settings** | ~12 | 1 | 11 | 🟢 Baja |
+| **Logistics (P&D)** | 4 | 2 | 3 | 🟡 Media |
+
+---
+
+## 7. Dependencias entre Módulos
+
+```mermaid
+flowchart TB
+    subgraph Core["⚙️ Core / Settings"]
+        Currency
+        Port
+        TransportMode
+        ServiceType
+        PackageType
+        Rate
+        ProductService
+        Term
+        CompanySetting
+    end
+
+    subgraph CRM["👤 CRM"]
+        Customer
+        Contact
+    end
+
+    subgraph Sales["🧾 Ventas"]
+        Quote
+        QuoteLine
+        Charge
+    end
+
+    subgraph Operations["📦 Operaciones"]
+        ShippingOrder
+        OceanShipment
+        AirShipment
+        Milestone
+        Document
+    end
+
+    subgraph Logistics["🚛 Logística"]
+        PickupOrder
+        DeliveryOrder
+        Stop
+        POD
+        Driver
+    end
+
+    subgraph Warehouse["🏭 Almacén"]
+        WarehouseReceipt
+        InventoryItem
+        InventoryMovement
+        InventoryReservation
+        WarehouseOrder
+        CycleCount
+        Location
+    end
+
+    subgraph Billing["💰 Facturación"]
+        PreInvoice
+        Invoice
+        FiscalSequence
+    end
+
+    subgraph Treasury["💳 Tesorería"]
+        Payment
+        PaymentAllocation
+    end
+
+    subgraph Accounting["📊 Contabilidad"]
+        Account
+        JournalEntry
+        AccountingPeriod
+        BankStatement
+    end
+
+    Core --> CRM
+    CRM --> Sales
+    Sales --> Operations
+    Operations --> Logistics
+    Operations --> Warehouse
+    Operations --> Billing
+    Billing --> Treasury
+    Treasury --> Accounting
+    Warehouse -.-> Operations
+```
+
+---
+
+## 8. Contexto para Desarrollo Futuro
+
+### 8.1 Puntos de Extensión Naturales
+1. **API REST/GraphQL**: Para integraciones, mobile, o servicios externos
+2. **Módulo de Reportes**: Ya identificado como pendiente
+3. **Notificaciones**: Infraestructura de mail existe pero no está activa
+4. **Integraciones**: navieras, líneas aéreas, aduanas, sistemas bancarios
+5. **Multi-tenant**: El sistema es single-tenant, pero la estructura de `Division`/`Project` sugiere posibilidad
+
+### 8.2 Consideraciones de Escalabilidad
+- El monolito actual es adecuado para el tamaño del equipo y la complejidad
+- Para escalar, priorizar: Redis para colas → background jobs → API capa → microservicios selectivos
+- La BD necesita análisis de indexación antes de crecer mucho
+
+### 8.3 Deuda Técnica Identificada
+1. Archivo de backup de modelo (`AccountingPeriod_backup.php`)
+2. `ilike` en scopes (PostgreSQL-only) con MySQL en producción
+3. `TODO` pendiente en `Customer.hasAvailableCredit()`
+4. Sin coverage de tests frontend
+5. Tests backend mínimos (solo integridad de migraciones)
+
+### 8.4 Características del Equipo
+- **Tech Lead**: Ariel Brito
+- **Stakeholder**: Reynaldo (Maed Logistic Trading)
+- **Git Flow**: Feature branches → `develop` → `main`
+- **Stack skills necesarios**: PHP/Laravel, React/TypeScript, MySQL
+
+---
+
+## 9. Conclusión
+
+MAED Logistic Platform es un sistema **maduro y funcional** que cubre el ciclo completo de una empresa de logística internacional con compliance fiscal dominicano. La arquitectura monolítica con Service Layer es apropiada para su tamaño actual.
+
+**Las decisiones más importantes para el próximo ciclo de desarrollo serán:**
+1. ¿Se mantiene el enfoque single-tenant o se migra a multi-tenant?
+2. ¿Se necesita API externa (mobile, integraciones)?
+3. ¿Se amplía el dominio logístico o se diversifica?
+4. ¿Cuál es la estrategia de testing y CI/CD?
+
+> [!IMPORTANT]
+> Este análisis proporciona la base contextual para definir las nuevas necesidades de desarrollo. Una vez definidas las necesidades, se podrá crear un plan de desarrollo priorizado con estimaciones. Se recomienda una sesión de descubrimiento para definir esas necesidades antes de proceder.

@@ -78,6 +78,7 @@ class WarehouseReceiptStateMachine
                     'description' => $line->description,
                     'qty' => $line->received_qty,
                     'uom' => $line->uom,
+                    'product_service_id' => $line->product_service_id,
                     'lot_number' => $line->lot_number,
                     'serial_number' => $line->serial_number,
                     'expiration_date' => $line->expiration_date,

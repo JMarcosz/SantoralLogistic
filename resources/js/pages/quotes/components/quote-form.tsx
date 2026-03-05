@@ -126,6 +126,7 @@ export default function QuoteForm({
             lines: (quote?.lines ?? [
                 {
                     product_service_id: '',
+                    line_type: 'service' as const,
                     description: '',
                     quantity: 1,
                     unit_price: 0,
@@ -137,11 +138,12 @@ export default function QuoteForm({
         });
 
     // Add a new line
-    const addLine = useCallback(() => {
+    const addLine = useCallback((lineType: 'product' | 'service' = 'service') => {
         setData('lines', [
             ...data.lines,
             {
                 product_service_id: '',
+                line_type: lineType,
                 description: '',
                 quantity: 1,
                 unit_price: 0,
@@ -178,6 +180,7 @@ export default function QuoteForm({
                         product.default_unit_price ?? 0;
                     newLines[index].tax_rate = product.taxable ? 18 : 0;
                     newLines[index].description = product.name;
+                    newLines[index].line_type = product.type === 'product' ? 'product' : 'service';
                 }
             }
 

@@ -70,7 +70,25 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('quotes/{quote}/approve', [App\Http\Controllers\QuoteController::class, 'approve'])->name('quotes.approve');
         Route::post('quotes/{quote}/reject', [App\Http\Controllers\QuoteController::class, 'reject'])->name('quotes.reject');
         Route::post('quotes/{quote}/convert-to-shipping-order', [App\Http\Controllers\QuoteController::class, 'convertToShippingOrder'])->name('quotes.convert');
+        Route::post('quotes/{quote}/convert-to-sales-order', [App\Http\Controllers\QuoteController::class, 'convertToSalesOrder'])->name('quotes.convert-to-sales-order');
         Route::get('quotes/{quote}/print', [App\Http\Controllers\QuoteController::class, 'print'])->name('quotes.print');
+
+        // Sales Orders (Órdenes de Pedido)
+        Route::get('sales-orders', [App\Http\Controllers\SalesOrderController::class, 'index'])->name('sales-orders.index');
+        Route::get('sales-orders/create', [App\Http\Controllers\SalesOrderController::class, 'create'])->name('sales-orders.create');
+        Route::post('sales-orders', [App\Http\Controllers\SalesOrderController::class, 'store'])->name('sales-orders.store');
+        Route::get('sales-orders/{salesOrder}', [App\Http\Controllers\SalesOrderController::class, 'show'])->name('sales-orders.show');
+
+        // Sales Orders state actions
+        Route::post('sales-orders/{salesOrder}/confirm', [App\Http\Controllers\SalesOrderController::class, 'confirm'])->name('sales-orders.confirm');
+        Route::post('sales-orders/{salesOrder}/start-delivery', [App\Http\Controllers\SalesOrderController::class, 'startDelivery'])->name('sales-orders.start-delivery');
+        Route::post('sales-orders/{salesOrder}/mark-delivered', [App\Http\Controllers\SalesOrderController::class, 'markDelivered'])->name('sales-orders.mark-delivered');
+        Route::post('sales-orders/{salesOrder}/cancel', [App\Http\Controllers\SalesOrderController::class, 'cancel'])->name('sales-orders.cancel');
+
+        // Product/Service API (for quote line tabs and receipt dropdowns)
+        Route::get('api/products-services', [App\Http\Controllers\Api\ProductServiceApiController::class, 'index'])->name('api.products-services.index');
+        Route::get('api/products-services/products', [App\Http\Controllers\Api\ProductServiceApiController::class, 'products'])->name('api.products-services.products');
+        Route::get('api/products-services/products-with-stock', [App\Http\Controllers\Api\ProductServiceApiController::class, 'productsWithStock'])->name('api.products-services.products-with-stock');
 
         // Shipping Orders
         Route::get('shipping-orders', [App\Http\Controllers\ShippingOrderController::class, 'index'])->name('shipping-orders.index');

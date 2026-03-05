@@ -19,6 +19,7 @@ class Invoice extends Model
         'customer_id',
         'pre_invoice_id',
         'shipping_order_id',
+        'sales_order_id',
         'currency_code',
         'issue_date',
         'due_date',
@@ -119,6 +120,14 @@ class Invoice extends Model
     public function shippingOrder(): BelongsTo
     {
         return $this->belongsTo(ShippingOrder::class);
+    }
+
+    /**
+     * Get the sales order this invoice belongs to.
+     */
+    public function salesOrder(): BelongsTo
+    {
+        return $this->belongsTo(SalesOrder::class);
     }
 
     public function lines(): HasMany

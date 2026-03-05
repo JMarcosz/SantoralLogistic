@@ -78,6 +78,11 @@ const navGroups: NavGroup[] = [
                 permission: 'quotes.view_any',
             },
             {
+                title: 'Órdenes de Pedido',
+                href: '/sales-orders',
+                icon: ShoppingCart,
+            },
+            {
                 title: 'Órdenes de Envío',
                 href: '/shipping-orders',
                 icon: Ship,

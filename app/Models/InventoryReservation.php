@@ -7,10 +7,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
- * InventoryReservation - Links inventory items to shipping orders.
+ * InventoryReservation - Links inventory items to shipping/sales orders.
  *
  * Represents a quantity of inventory that has been reserved for a specific
- * shipping order but has not yet been physically picked/moved.
+ * shipping order or sales order but has not yet been physically picked/moved.
  */
 class InventoryReservation extends Model
 {
@@ -18,6 +18,7 @@ class InventoryReservation extends Model
     protected $fillable = [
         'inventory_item_id',
         'shipping_order_id',
+        'sales_order_id',
         'qty_reserved',
         'created_by',
         'deleted_by',
@@ -41,6 +42,14 @@ class InventoryReservation extends Model
     public function shippingOrder(): BelongsTo
     {
         return $this->belongsTo(ShippingOrder::class);
+    }
+
+    /**
+     * Get the sales order this reservation is linked to.
+     */
+    public function salesOrder(): BelongsTo
+    {
+        return $this->belongsTo(SalesOrder::class);
     }
 
     /**

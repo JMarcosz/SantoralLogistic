@@ -17,6 +17,7 @@ class InventoryItem extends Model
         'customer_id',
         'warehouse_receipt_id',
         'warehouse_receipt_line_id',
+        'product_service_id',
         'item_code',
         'description',
         'qty',
@@ -71,6 +72,14 @@ class InventoryItem extends Model
     public function warehouseReceiptLine(): BelongsTo
     {
         return $this->belongsTo(WarehouseReceiptLine::class, 'warehouse_receipt_line_id');
+    }
+
+    /**
+     * Get the product/service linked to this inventory item.
+     */
+    public function productService(): BelongsTo
+    {
+        return $this->belongsTo(ProductService::class);
     }
 
     /**
@@ -136,6 +145,14 @@ class InventoryItem extends Model
     public function scopeBySku($query, string $sku)
     {
         return $query->where('item_code', $sku);
+    }
+
+    /**
+     * Scope for items by product_service_id.
+     */
+    public function scopeByProductService($query, int $productServiceId)
+    {
+        return $query->where('product_service_id', $productServiceId);
     }
 
     /**

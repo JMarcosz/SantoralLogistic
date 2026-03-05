@@ -1,6 +1,7 @@
 export interface FormQuoteLine {
     id?: number;
     product_service_id: number | '';
+    line_type: 'product' | 'service';
     description: string;
     quantity: number;
     unit_price: number;

@@ -23,6 +23,7 @@ use App\Services\QuoteConversionService;
 use App\Services\QuotePdfService;
 use App\Services\QuotePricingService;
 use App\Services\QuoteStateMachine;
+use App\Services\SalesOrderService;
 use App\Services\TermsResolverService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -40,6 +41,7 @@ class QuoteController extends Controller
         protected QuoteConversionService $conversionService,
         protected QuotePdfService $pdfService,
         protected TermsResolverService $termsResolver,
+        protected SalesOrderService $salesOrderService,
     ) {}
 
     /**
@@ -52,7 +54,8 @@ class QuoteController extends Controller
         $query = Quote::withRelations()
             ->accessibleBy($request->user())
             ->withCount('lines')
-            ->with('shippingOrder:id,quote_id,order_number'); // Load if already converted
+            ->with('shippingOrder:id,quote_id,order_number')
+            ->with('salesOrder:id,quote_id,order_number,status'); // Load if already converted
 
         // Apply filters
         if ($request->filled('status')) {
@@ -80,6 +83,7 @@ class QuoteController extends Controller
         // Add has_shipping_order flag to each quote
         $quotes->getCollection()->transform(function ($quote) {
             $quote->has_shipping_order = $quote->shippingOrder !== null;
+            $quote->has_sales_order = $quote->salesOrder !== null;
             return $quote;
         });
 
@@ -184,6 +188,7 @@ class QuoteController extends Controller
             foreach ($validated['lines'] as $index => $lineData) {
                 $quote->lines()->create([
                     'product_service_id' => $lineData['product_service_id'],
+                    'line_type' => $lineData['line_type'] ?? 'service',
                     'description' => $lineData['description'] ?? null,
                     'quantity' => $lineData['quantity'],
                     'unit_price' => $lineData['unit_price'],
@@ -244,6 +249,7 @@ class QuoteController extends Controller
         ]);
 
         $quote->load('shippingOrder');
+        $quote->load('salesOrder');
 
         return Inertia::render('quotes/show', [
             'quote' => (new QuoteResource($quote))->resolve(),
@@ -251,6 +257,11 @@ class QuoteController extends Controller
             'shippingOrder' => $quote->shippingOrder ? [
                 'id' => $quote->shippingOrder->id,
                 'order_number' => $quote->shippingOrder->order_number,
+            ] : null,
+            'salesOrder' => $quote->salesOrder ? [
+                'id' => $quote->salesOrder->id,
+                'order_number' => $quote->salesOrder->order_number,
+                'status' => $quote->salesOrder->status->value,
             ] : null,
             'can' => [
                 'update' => request()->user()?->can('update', $quote) ?? false,
@@ -350,6 +361,7 @@ class QuoteController extends Controller
             foreach ($validated['lines'] as $index => $lineData) {
                 $quote->lines()->create([
                     'product_service_id' => $lineData['product_service_id'],
+                    'line_type' => $lineData['line_type'] ?? 'service',
                     'description' => $lineData['description'] ?? null,
                     'quantity' => $lineData['quantity'],
                     'unit_price' => $lineData['unit_price'],
@@ -474,6 +486,24 @@ class QuoteController extends Controller
                 ->route('quotes.show', $quote)
                 ->with('success', "Orden de envío {$shippingOrder->order_number} creada exitosamente.");
         } catch (\InvalidArgumentException $e) {
+            return redirect()
+                ->route('quotes.show', $quote)
+                ->with('error', $e->getMessage());
+        }
+    }
+
+    /**
+     * Convert approved quote to sales order (orden de pedido).
+     */
+    public function convertToSalesOrder(Quote $quote): RedirectResponse
+    {
+        try {
+            $salesOrder = $this->salesOrderService->createFromQuote($quote);
+
+            return redirect()
+                ->route('sales-orders.show', $salesOrder)
+                ->with('success', "Orden de pedido {$salesOrder->order_number} creada exitosamente.");
+        } catch (\RuntimeException $e) {
             return redirect()
                 ->route('quotes.show', $quote)
                 ->with('error', $e->getMessage());
